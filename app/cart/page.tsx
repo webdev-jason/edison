@@ -15,17 +15,14 @@ export default function CartPage() {
   const handleCheckout = async () => {
     setIsLoading(true);
     try {
-      // 1. Send the cart items to our API
       const response = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ items }),
       });
 
-      // 2. Get the Stripe URL from the response
       const data = await response.json();
 
-      // 3. Redirect the user to Stripe
       if (data.url) {
         window.location.href = data.url;
       } else {
@@ -61,8 +58,9 @@ export default function CartPage() {
           {/* Cart Items List */}
           <section className="lg:col-span-7">
             <ul className="divide-y divide-gray-200 border-t border-b border-gray-200">
-              {items.map((item) => (
-                <li key={item.id} className="flex py-6">
+              {items.map((item, index) => (
+                // We use index here as part of the key because we might have the same product twice with different text
+                <li key={`${item.id}-${index}`} className="flex py-6">
                   <div className="flex-shrink-0">
                     <div className="relative h-24 w-24 rounded-md overflow-hidden border border-gray-200">
                       <Image
@@ -84,6 +82,14 @@ export default function CartPage() {
                             </span>
                           </h3>
                         </div>
+                        
+                        {/* New: Display Custom Text */}
+                        {item.customText && (
+                          <p className="mt-1 text-xs text-gray-500 italic">
+                            Engraving: "{item.customText}"
+                          </p>
+                        )}
+                        
                         <p className="mt-1 text-sm font-medium text-gray-900">${item.price.toFixed(2)}</p>
                       </div>
 
@@ -94,7 +100,8 @@ export default function CartPage() {
                         <div className="absolute top-0 right-0">
                           <button
                             type="button"
-                            onClick={() => removeFromCart(item.id)}
+                            // Pass the text to remove ONLY this specific version
+                            onClick={() => removeFromCart(item.id, item.customText)}
                             className="-m-2 inline-flex p-2 text-gray-400 hover:text-gray-500"
                           >
                             <span className="sr-only">Remove</span>
