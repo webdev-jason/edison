@@ -1,42 +1,33 @@
 import Image from "next/image";
 import Link from "next/link";
 
-interface ProductProps {
-  product: {
-    id: number;
-    name: string;
-    price: number;
-    category: string;
-    image: string;
-  };
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  category: string;
 }
 
-export default function ProductCard({ product }: ProductProps) {
+export default function ProductCard({ product }: { product: Product }) {
   return (
-    <Link href={`/products/${product.id}`} className="group block">
-      <div className="relative bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
-        <div className="aspect-square relative w-full bg-gray-50">
-          <Image 
-            src={product.image} 
-            alt={product.name} 
-            fill 
-            className="object-cover group-hover:scale-105 transition-transform duration-300" 
-          />
-          <span className="absolute top-2 left-2 bg-white/90 px-2 py-1 text-xs font-semibold uppercase tracking-wide rounded-md text-gray-800">
-            {product.category}
-          </span>
-        </div>
-        <div className="p-5">
-          <h3 className="text-lg font-bold text-gray-900 leading-tight">
+    <Link href={`/shop/${product.id}`} className="group block">
+      <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-gray-100 border border-gray-200">
+        <Image
+          src={product.image}
+          alt={product.name}
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-300"
+        />
+      </div>
+      <div className="mt-4 flex justify-between">
+        <div>
+          <h3 className="text-sm font-medium text-gray-900 group-hover:text-gray-600">
             {product.name}
           </h3>
-          <p className="mt-2 text-xl font-medium text-gray-600">
-            ${product.price.toFixed(2)}
-          </p>
-          <div className="mt-4 w-full bg-black text-white py-3 px-4 rounded-lg font-medium text-center hover:bg-gray-800 transition-colors">
-            View Details
-          </div>
+          <p className="mt-1 text-sm text-gray-500">{product.category}</p>
         </div>
+        <p className="text-sm font-medium text-gray-900">${product.price.toFixed(2)}</p>
       </div>
     </Link>
   );
